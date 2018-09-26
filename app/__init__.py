@@ -2,16 +2,16 @@ import os
 
 from flask import Flask, request
 
-from functions import ugly_load_to_sftp,ugly_load_to_db
+from functions import ugly_load_to_sftp, ugly_load_to_db
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    #app.config.from_mapping(
+    # app.config.from_mapping(
     #    SECRET_KEY='dev',
     #    DATABASE=os.path.join(app.instance_path, 'Neiljob.sqlite'),
-    #)
+    # )
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -26,22 +26,14 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
     @app.route('/load_to_sftp')
     def load_to_sftp():
         ugly_load_to_sftp()
-        return 'Hello, World!'
+        return
 
     @app.route('/load_to_db/', methods=['GET'])
     def load_to_db():
-        """
-        Recommendation endpoint
-        @product_id - product id, default = NULL
-        http://127.0.0.1:9000/v1/recommend/?product_id=130169
-        #user_id  = request.args.get('uid')
-        #product_id = request.args.get('product_id')
-        Returns recomendations on product level.
-        """
+
         FIRSTNAME = request.args.get('FIRSTNAME')
         LASTNAME = request.args.get('LASTNAME')
         INITIAL = request.args.get('INITIAL')
@@ -49,7 +41,7 @@ def create_app(test_config=None):
         POSTALCODE = request.args.get('POSTALCODE')
         FROM = request.args.get('FROM')
         EMAIL = request.args.get('EMAIL')
-        REPLYMESSAGE =  request.args.get('REPLYMESSAGE')
+        REPLYMESSAGE = request.args.get('REPLYMESSAGE')
         ORIGINALMESSAGE = request.args.get('ORIGINALMESSAGE')
         ALTCONTACTNUM = request.args.get('ALTCONTACTNUM')
         DATEOFBIRTH = request.args.get('DATEOFBIRTH')
@@ -57,7 +49,8 @@ def create_app(test_config=None):
         CAMPAIGNNAME = request.args.get('CAMPAIGNNAME')
         SMSSENTTIME = request.args.get('SMSSENTTIME')
         SMSREPLYTIME = request.args.get('SMSREPLYTIME')
-        ugly_load_to_db(FIRSTNAME,LASTNAME,INITIAL,IDNUMBER,POSTALCODE,FROM,EMAIL,REPLYMESSAGE,ORIGINALMESSAGE,ALTCONTACTNUM,DATEOFBIRTH,CAMPAIGNID,CAMPAIGNNAME,SMSSENTTIME,SMSREPLYTIME)
-        return "loaded to db"
+        ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
+                        ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME)
+        return
 
     return app
