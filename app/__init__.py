@@ -26,6 +26,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    @app.route('/heyheyhey')
+    def heyheyhey():
+
+        return "Heyheyhey"
+
     @app.route('/load_to_sftp')
     def load_to_sftp():
         ugly_load_to_sftp()
