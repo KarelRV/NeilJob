@@ -3,6 +3,11 @@ import pandas as pd
 import smtplib
 import pysftp
 import datetime
+import os
+
+def test2():
+    x=os.environ.get("FIRST_VAR")
+    print (x)
 
 
 def ugly_load_to_sftp():

@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request
 
-from functions import ugly_load_to_sftp, ugly_load_to_db
+from functions import ugly_load_to_sftp, ugly_load_to_db, test2
 
 
 def create_app(test_config=None):
@@ -28,7 +28,7 @@ def create_app(test_config=None):
 
     @app.route('/test')
     def test():
-
+        test2()
         return "this is a test response"
 
     @app.route('/load_to_sftp')
