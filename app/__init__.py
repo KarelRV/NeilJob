@@ -26,15 +26,15 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/heyheyhey')
-    def heyheyhey():
+    @app.route('/test')
+    def test():
 
-        return "Heyheyhey"
+        return "this is a test response"
 
     @app.route('/load_to_sftp')
     def load_to_sftp():
         ugly_load_to_sftp()
-        return
+        return "loaded to sftp"
 
     @app.route('/load_to_db/', methods=['GET'])
     def load_to_db():
@@ -56,6 +56,6 @@ def create_app(test_config=None):
         SMSREPLYTIME = request.args.get('SMSREPLYTIME')
         ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
                         ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME)
-        return
+        return "loaded to db"
 
     return app
