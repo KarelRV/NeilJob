@@ -1,9 +1,15 @@
 import os
-
+import logging
 from flask import Flask, request
+from slackclient import SlackClient
 
 from functions import ugly_load_to_sftp, ugly_load_to_db
 
+slack_client = SlackClient(os.environ.get('SLACK_TOKEN'))
+logging.basicConfig(format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+                    datefmt='%d-%m-%Y:%H:%M:%S',
+                    level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 def create_app(test_config=None):
     # create and configure the app
@@ -33,7 +39,16 @@ def create_app(test_config=None):
 
     @app.route('/load_to_sftp')
     def load_to_sftp():
-        ugly_load_to_sftp()
+        try:
+            ugly_load_to_sftp()
+            logger.info('Success load to SFTP.')
+            slack_client.api_call('chat.postMessage', channel='#datascience-k8s',
+                                  text=f'dimseg_main ran successfully.')
+        except Exception as e:
+            logger.error(f'Unsuccessful load to SFTP. Error: {e}')
+            slack_client.api_call('chat.postMessage', channel='#datascience-k8s',
+                                  text=f'Load to SFTP was unsuccessful. Error: {e}.')
+            raise
         return "loaded to sftp"
 
     @app.route('/load_to_db/', methods=['GET'])
