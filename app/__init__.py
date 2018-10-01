@@ -28,7 +28,7 @@ def create_app(test_config=None):
 
     @app.route('/test')
     def test():
-        test2()
+        # test2()
         return "this is a test response"
 
     @app.route('/load_to_sftp')
