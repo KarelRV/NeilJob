@@ -3,43 +3,44 @@ import pandas as pd
 import smtplib
 import pysftp
 import datetime
+import os
 
 
 def ugly_load_to_sftp():
-    ftplocation = 'test/in'
-    # filelocation ="C:/Users/Administrator/Documents/Leads"
     curdate = datetime.datetime.today().strftime('%Y-%m-%d')
-    filename = "ANT003_" + curdate + "_Responsers_" + "test.txt"
-    # con = pyodbc.connect("Driver={SQL Server Native Client 11.0};"
-    #                      "Server=niel.database.windows.net;"
-    #                      "Database=analysis;"
-    #                      "Uid=niel;"
-    # "Pwd=8sPvdY5C$Ss2pfSjy*")
+    filename = "ANT003_" + curdate + str(os.environ.get('FILENAMESUFFIX'))
 
-    con = pymysql.connect(host="154.0.171.86",
-                          user="niel",
-                          password="L3adsu$ER",
-                          db="leads",
+    con = pymysql.connect(host=str(os.environ.get('MYSQLHOST')),
+                          user=str(os.environ.get('MYSQLUSER')),
+                          password=str(os.environ.get('MYSQLPASSWORD')),
+                          db=str(os.environ.get('MYSQLDB')),
                           cursorclass=pymysql.cursors.DictCursor)
     df = pd.read_sql_query("CALL get_new_leads()", con)
+
     df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
     df['TypeDesc'] = "00008625"
     df2 = df.astype(str).apply(''.join, axis=1)
     df2.to_csv(filename, index=False, encoding="utf-8")
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys = None
-    with pysftp.Connection(host="st.sanlam.co.za", username="sd_antSB", password="Dep14K77", cnopts=cnopts) as sftp:
-        with sftp.cd(ftplocation):
+
+    with pysftp.Connection(host=str(os.environ.get('FTPHOST')),
+                           username=str(os.environ.get('FTPUSER')),
+                           password=str(os.environ.get('FTPPASSWORD')),
+                           cnopts=cnopts) as sftp:
+
+        with sftp.cd(str(os.environ.get('FTPLOCATION'))):
             sftp.put(filename)
+
     message_text = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
     message_subject = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
     fromaddr = 'anthropologyleadsnotification@gmail.com'
-    toaddr = 'nieldv@gmail.com'
+    toaddr = str(os.environ.get('EMAILTOADDR'))
     message = "From: %s\r\n" % fromaddr + "To: %s\r\n" % toaddr + "Subject: %s\r\n" % message_subject + "\r\n" + message_text
     toaddrs = [toaddr]
 
     username = 'anthropologyleadsnotification@gmail.com'
-    password = '$6#saSH@xcr5vkP1zh'
+    password = str(os.environ.get('EMAILPASSWORD'))
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo()
     server.starttls()
@@ -50,7 +51,7 @@ def ugly_load_to_sftp():
 
 def ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
                     ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME):
-    sql_insert = "INSERT INTO karel_test3 VALUES({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14})".format(
+    sql_insert = "INSERT INTO leads_extract_raw (FIRSTNAME,LASTNAME,INITIAL,IDNUMBER, POSTALCODE,`FROM`,EMAIL,REPLYMESSAGE,ORIGINALMESSAGE,ALTCONTACTNUM,DATEOFBIRTH,CAMPAIGNID,CAMPAIGNNAME,SMSSENTTIME,SMSREPLYTIME)VALUES({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14})".format(
         FIRSTNAME,
         LASTNAME,
         INITIAL,
@@ -67,10 +68,10 @@ def ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EM
         SMSSENTTIME,
         SMSREPLYTIME)
 
-    con = pymysql.connect(host="154.0.171.86",
-                          user="niel",
-                          password="L3adsu$ER",
-                          db="leads",
+    con = pymysql.connect(host=str(os.environ.get('MYSQLHOST')),
+                          user=str(os.environ.get('MYSQLUSER')),
+                          password=str(os.environ.get('MYSQLPASSWORD')),
+                          db=str(os.environ.get('MYSQLDB')),
                           cursorclass=pymysql.cursors.DictCursor)
 
     with con.cursor() as curr:
