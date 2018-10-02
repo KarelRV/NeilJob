@@ -22,7 +22,7 @@ def ugly_load_to_sftp():
                           db="leads",
                           cursorclass=pymysql.cursors.DictCursor)
     df = pd.read_sql_query("CALL get_new_leads()", con)
-    df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
+    df['TypeCode'] = "ANTHROPOLOGY OLICO NPH STi                "
     df['TypeDesc'] = "00008625"
     df2 = df.astype(str).apply(''.join, axis=1)
     df2.to_csv(filename, index=False, encoding="utf-8")
