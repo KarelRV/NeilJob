@@ -57,7 +57,7 @@ def create_app(test_config=None):
         ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
                         ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME)
         return "loaded to db"
-	@app.route('/load_to_db_stops/', methods=['GET'])
+    @app.route('/load_to_db_stops/', methods=['GET'])
     def load_to_db_stops():
 
         FIRSTNAME = request.args.get('FIRSTNAME')
@@ -79,7 +79,7 @@ def create_app(test_config=None):
                         ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME)
         return "loaded to db stops"
 		
-	@app.route('/load_to_db_om/', methods=['GET'])
+    @app.route('/load_to_db_om/', methods=['GET'])
     def load_to_db_om():
 
         FIRSTNAME = request.args.get('FIRSTNAME')
