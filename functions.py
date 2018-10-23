@@ -16,7 +16,8 @@ def ugly_load_to_sftp():
                           db=str(os.environ.get('MYSQLDB')),
                           cursorclass=pymysql.cursors.DictCursor)
     df = pd.read_sql_query("CALL get_new_leads()", con)
-
+    con.commit()
+    con.close()
     df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
     df['TypeDesc'] = "00008625"
     df2 = df.astype(str).apply(''.join, axis=1)
