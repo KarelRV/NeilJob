@@ -58,4 +58,5 @@ def create_app(test_config=None):
                         ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME)
         return "loaded to db"
 
+
     return app
