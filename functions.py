@@ -17,10 +17,8 @@ def ugly_load_to_sftp():
                           cursorclass=pymysql.cursors.DictCursor)
     df = pd.read_sql_query("CALL get_new_leads()", con)
 
-    
-    df['TypeCode'] = "00008625"
-    df['TypeDesc'] = "ANTHROPOLOGY OLICO NPH STi                "
-	
+    df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
+    df['TypeDesc'] = "00008625"
     df2 = df.astype(str).apply(''.join, axis=1)
     df2.to_csv(filename, index=False, encoding="utf-8")
     cnopts = pysftp.CnOpts()
@@ -54,6 +52,70 @@ def ugly_load_to_sftp():
 def ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
                     ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME):
     sql_insert = "INSERT INTO leads_extract_raw (FIRSTNAME,LASTNAME,INITIAL,IDNUMBER, POSTALCODE,`FROM`,EMAIL,REPLYMESSAGE,ORIGINALMESSAGE,ALTCONTACTNUM,DATEOFBIRTH,CAMPAIGNID,CAMPAIGNNAME,SMSSENTTIME,SMSREPLYTIME)VALUES({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14})".format(
+        FIRSTNAME,
+        LASTNAME,
+        INITIAL,
+        IDNUMBER,
+        POSTALCODE,
+        FROM,
+        EMAIL,
+        REPLYMESSAGE,
+        ORIGINALMESSAGE,
+        ALTCONTACTNUM,
+        DATEOFBIRTH,
+        CAMPAIGNID,
+        CAMPAIGNNAME,
+        SMSSENTTIME,
+        SMSREPLYTIME)
+
+    con = pymysql.connect(host=str(os.environ.get('MYSQLHOST')),
+                          user=str(os.environ.get('MYSQLUSER')),
+                          password=str(os.environ.get('MYSQLPASSWORD')),
+                          db=str(os.environ.get('MYSQLDB')),
+                          cursorclass=pymysql.cursors.DictCursor)
+
+    with con.cursor() as curr:
+        curr.execute(sql_insert)
+        curr.close()
+
+    con.commit()
+    con.close()
+
+def ugly_load_to_db_stops(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
+                    ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME):
+    sql_insert = "INSERT INTO leads_extract_raw_stops (FIRSTNAME,LASTNAME,INITIAL,IDNUMBER, POSTALCODE,`FROM`,EMAIL,REPLYMESSAGE,ORIGINALMESSAGE,ALTCONTACTNUM,DATEOFBIRTH,CAMPAIGNID,CAMPAIGNNAME,SMSSENTTIME,SMSREPLYTIME)VALUES({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14})".format(
+        FIRSTNAME,
+        LASTNAME,
+        INITIAL,
+        IDNUMBER,
+        POSTALCODE,
+        FROM,
+        EMAIL,
+        REPLYMESSAGE,
+        ORIGINALMESSAGE,
+        ALTCONTACTNUM,
+        DATEOFBIRTH,
+        CAMPAIGNID,
+        CAMPAIGNNAME,
+        SMSSENTTIME,
+        SMSREPLYTIME)
+
+    con = pymysql.connect(host=str(os.environ.get('MYSQLHOST')),
+                          user=str(os.environ.get('MYSQLUSER')),
+                          password=str(os.environ.get('MYSQLPASSWORD')),
+                          db=str(os.environ.get('MYSQLDB')),
+                          cursorclass=pymysql.cursors.DictCursor)
+
+    with con.cursor() as curr:
+        curr.execute(sql_insert)
+        curr.close()
+
+    con.commit()
+    con.close()
+	
+def ugly_load_to_db_om(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
+                    ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME):
+    sql_insert = "INSERT INTO leads_extract_raw_om (FIRSTNAME,LASTNAME,INITIAL,IDNUMBER, POSTALCODE,`FROM`,EMAIL,REPLYMESSAGE,ORIGINALMESSAGE,ALTCONTACTNUM,DATEOFBIRTH,CAMPAIGNID,CAMPAIGNNAME,SMSSENTTIME,SMSREPLYTIME)VALUES({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14})".format(
         FIRSTNAME,
         LASTNAME,
         INITIAL,
