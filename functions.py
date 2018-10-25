@@ -18,8 +18,11 @@ def ugly_load_to_sftp():
     df = pd.read_sql_query("CALL get_new_leads()", con)
     con.commit()
     con.close()
-    df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
-    df['TypeDesc'] = "00008625"
+    #df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
+    #df['TypeDesc'] = "00008625"
+	
+	df['TypeDesc'] = "ANTHROPOLOGY OLICO NPH STi                "
+	df['TypeCode'] = "00008625"
     df2 = df.astype(str).apply(''.join, axis=1)
     df2.to_csv(filename, index=False, encoding="utf-8")
     cnopts = pysftp.CnOpts()
