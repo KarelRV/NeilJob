@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request
 
-from functions import ugly_load_to_sftp, ugly_load_to_db,ugly_load_to_db_stops,ugly_load_to_db_om
+from functions import ugly_load_to_sftp, ugly_load_to_db,ugly_load_to_db_stops,ugly_load_to_db_om,load_to_sftp_om,load_to_sftp_stops_om
 
 
 def create_app(test_config=None):
