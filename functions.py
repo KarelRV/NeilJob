@@ -32,9 +32,9 @@ def ugly_load_to_sftp():
                            username=str(os.environ.get('FTPUSER')),
                            password=str(os.environ.get('FTPPASSWORD')),
                            cnopts=cnopts) as sftp:
-
-        with sftp.cd(str(os.environ.get('FTPLOCATION'))):
-            sftp.put(filename)
+        sftp.put(filename)
+    #    with sftp.cd(str(os.environ.get('FTPLOCATION'))):
+    #        sftp.put(filename)
 
     message_text = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
     message_subject = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
