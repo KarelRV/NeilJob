@@ -94,6 +94,54 @@ def ugly_load_to_sftp_om():
     server.login(username, password)
     server.sendmail(fromaddr, toaddrs, message)
     server.quit()	
+	
+	
+	
+def ugly_load_to_sftp_stops():
+    curdate = datetime.datetime.today().strftime('%Y-%m-%d')
+    filename = "ANT004_" + curdate + "_Optouts.txt"
+
+    con = pymysql.connect(host=str(os.environ.get('MYSQLHOST')),
+                          user=str(os.environ.get('MYSQLUSER')),
+                          password=str(os.environ.get('MYSQLPASSWORD')),
+                          db=str(os.environ.get('MYSQLDB')),
+                          cursorclass=pymysql.cursors.DictCursor)
+    df = pd.read_sql_query("CALL get_new_stops()", con)
+    con.commit()
+    con.close()
+    #df['TypeName'] = "ANTHROPOLOGY OLICO NPH STi"
+    #df['TypeDesc'] = "00008625"
+	
+#    df['TypeDesc'] = "ANTHROPOLOGY OLICO NPH STi                "
+#    df['TypeCode'] = "00008625"
+    #df2 = df.astype(str).apply(''.join, axis=1)
+    df.to_csv(filename, index=False, encoding="utf-8",header=False)
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None
+
+    with pysftp.Connection(host=str(os.environ.get('FTPHOST')),
+                           username=str(os.environ.get('FTPUSER')),
+                           password=str(os.environ.get('FTPPASSWORD')),
+                           cnopts=cnopts) as sftp:
+        
+        with sftp.cd(str(os.environ.get('FTPLOCATION_STOPS'))):
+            sftp.put(filename)
+
+    message_text = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
+    message_subject = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
+    fromaddr = 'anthropologyleadsnotification@gmail.com'
+    toaddr = str(os.environ.get('EMAILTOADDR_STOPS'))
+    message = "From: %s\r\n" % fromaddr + "To: %s\r\n" % toaddr + "Subject: %s\r\n" % message_subject + "\r\n" + message_text
+    toaddrs = [toaddr]
+
+    username = 'anthropologyleadsnotification@gmail.com'
+    password = str(os.environ.get('EMAILPASSWORD'))
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.ehlo()
+    server.starttls()
+    server.login(username, password)
+    server.sendmail(fromaddr, toaddrs, message)
+    server.quit()
 
 def ugly_load_to_db(FIRSTNAME, LASTNAME, INITIAL, IDNUMBER, POSTALCODE, FROM, EMAIL, REPLYMESSAGE, ORIGINALMESSAGE,
                     ALTCONTACTNUM, DATEOFBIRTH, CAMPAIGNID, CAMPAIGNNAME, SMSSENTTIME, SMSREPLYTIME):
