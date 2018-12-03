@@ -79,8 +79,8 @@ def ugly_load_to_sftp_om():
         #with sftp.cd(str(os.environ.get('FTPLOCATION_OM'))):
         #    sftp.put(filename)
 
-    message_text = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
-    message_subject = "SFTP LOAD: " + curdate + " - " + str(df2.shape[0])
+    message_text = "SFTP LOAD: " + curdate + " - " + str(df.shape[0])
+    message_subject = "SFTP LOAD: " + curdate + " - " + str(df.shape[0])
     fromaddr = 'anthropologyleadsnotification@gmail.com'
     toaddr = str(os.environ.get('EMAILTOADDR_OM'))
     message = "From: %s\r\n" % fromaddr + "To: %s\r\n" % toaddr + "Subject: %s\r\n" % message_subject + "\r\n" + message_text
